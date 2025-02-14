@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
 class PostController extends Controller
@@ -66,6 +67,8 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
+        Gate::authorize('updateAdmin', $post);
+
         $categories = Category::all();
 
         return view('admin.posts.edit', compact('post', 'categories'));
@@ -76,6 +79,8 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+        Gate::authorize('updateAdmin', $post);
+
         $validatedData = $request->validate([
             'title' => [
                 'required',
@@ -96,6 +101,8 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        Gate::authorize('deleteAdmin', $post);
+
         $post->delete();
 
         return redirect()->route('admin.posts.index')->with('success', 'Post deleted successfully.');

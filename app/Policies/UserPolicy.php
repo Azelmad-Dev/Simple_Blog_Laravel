@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
+use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {
@@ -33,17 +34,21 @@ class UserPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, User $model): bool
+    public function update(User $user, User $model): Response
     {
-        return false;
+        return $user->id === $model->admin_id
+            ? Response::allow()
+            : Response::deny('You do not own this user.');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, User $model): bool
+    public function delete(User $user, User $model): Response
     {
-        return false;
+        return $user->id === $model->admin_id
+            ? Response::allow()
+            : Response::deny('You do not own this user.');
     }
 
     /**

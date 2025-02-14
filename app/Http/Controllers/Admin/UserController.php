@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
@@ -15,7 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::where('role', 2)->get();
 
         return view('admin.users.index', compact('users'));
     }
@@ -45,6 +46,8 @@ class UserController extends Controller
 
         $validatedData['password'] = Hash::make($validatedData['password']);
 
+        $validatedData['admin_id'] = auth()->user()->id;
+
         User::create($validatedData);
 
         return redirect()->route('admin.users.index')->with('success', 'User created successfully.');
@@ -63,6 +66,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        Gate::authorize('update', $user);
         dd("I haven't created this action yet.");
     }
 
@@ -71,7 +75,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        Gate::authorize('update', $user);
     }
 
     /**
@@ -79,6 +83,8 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        Gate::authorize('delete', $user);
+
         $user->delete();
 
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');

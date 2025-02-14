@@ -14,12 +14,4 @@ class CategoryPolicy
 
         return null;
     }
-
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewCategoriesPage(?User $user): bool
-    {
-        return $user?->role == 1;
-    }
 }
