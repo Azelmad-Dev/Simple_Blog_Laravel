@@ -10,18 +10,22 @@
             <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ $post->content }}</p>
 
             <div class="flex gap-2">
-                <a href="{{ route('admin.posts.edit', $post) }}"
-                    class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300">
-                    Edit
-                </a>
-                <form method="POST" action="{{ route('admin.posts.destroy', $post) }}" class="inline-block">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" onclick="return confirm('Are you sure?')"
-                        class="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300">
-                        Delete
-                    </button>
-                </form>
+                @can('updateAdmin', $post)
+                    <a href="{{ route('admin.posts.edit', $post) }}"
+                        class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                        Edit
+                    </a>
+                @endcan
+                @can('deleteAdmin', $post)
+                    <form method="POST" action="{{ route('admin.posts.destroy', $post) }}" class="inline-block">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" onclick="return confirm('Are you sure?')"
+                            class="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300">
+                            Delete
+                        </button>
+                    </form>
+                @endcan
                 <a href="{{ route('admin.comments.of_selected_post', $post) }}"
                     class="px-4 py-2 text-sm font-medium text-white bg-blue-900 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300">
                     Comments

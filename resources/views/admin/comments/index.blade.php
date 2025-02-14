@@ -45,20 +45,24 @@
                                 </div>
                             </div>
                             <div class="flex gap-2">
-                                <a href="{{ route('admin.comments.edit', $comment) }}"
-                                    class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300">
-                                    Edit
-                                </a>
-                                <form method="POST" action="{{ route('admin.comments.destroy', $comment) }}"
-                                    class="inline-block">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        onclick="return confirm('Are you sure You want to delete this comment?')"
-                                        class="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300">
-                                        Delete
-                                    </button>
-                                </form>
+                                @can('updateAdmin', $comment)
+                                    <a href="{{ route('admin.comments.edit', $comment) }}"
+                                        class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                                        Edit
+                                    </a>
+                                @endcan
+                                @can('deleteAdmin', $comment)
+                                    <form method="POST" action="{{ route('admin.comments.destroy', $comment) }}"
+                                        class="inline-block">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                            onclick="return confirm('Are you sure You want to delete this comment?')"
+                                            class="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300">
+                                            Delete
+                                        </button>
+                                    </form>
+                                @endcan
                             </div>
                         @endforeach
                     </div>

@@ -65,4 +65,28 @@ class CommentPolicy
     {
         return false;
     }
+
+    /**
+     * Determine whether the admin can update the model.
+     */
+    public function updateAdmin(User $user, Comment $comment): bool
+    {
+        if ($comment->user->isAdmin() && $comment->user_id !== $user->id) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Determine whether the admin can delete the model.
+     */
+    public function deleteAdmin(User $user, Comment $comment): bool
+    {
+        if ($comment->user->isAdmin() && $comment->user_id !== $user->id) {
+            return false;
+        }
+
+        return true;
+    }
 }

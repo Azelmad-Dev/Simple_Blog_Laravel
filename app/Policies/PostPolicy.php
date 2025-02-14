@@ -8,15 +8,6 @@ use Illuminate\Auth\Access\Response;
 
 class PostPolicy
 {
-    public function before(?User $user, string $ability): ?bool
-    {
-        if ($user?->role == 1) {
-            return true;
-        }
-
-        return null;
-    }
-
     /**
      * Determine whether the user can view any models.
      */
@@ -75,5 +66,27 @@ class PostPolicy
     public function forceDelete(User $user, Post $post): bool
     {
         return false;
+    }
+
+    public function updateAdmin(User $user, Post $post): bool
+    {
+        // If the post belongs to another admin
+        if ($post->user->isAdmin() && $post->user_id !== $user->id) {
+            return false; // Can't update other admins' posts
+        }
+
+        // Admin can update their own posts and normal users' posts
+        return true;
+    }
+
+    public function deleteAdmin(User $user, Post $post): bool
+    {
+        // If the post belongs to another admin
+        if ($post->user->isAdmin() && $post->user_id !== $user->id) {
+            return false; // Can't delete other admins' posts
+        }
+
+        // Admin can delete their own posts and normal users' posts
+        return true;
     }
 }
