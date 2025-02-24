@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreCategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -29,14 +30,9 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
-        $validatedData = $request->validate([
-            // bail Rule on name : If required fails (e.g., the name is missing), Laravel will not check unique:categories or max:50
-            'name' => 'bail|required|unique:categories|max:50',
-        ]);
-
-        Category::create($validatedData);
+        Category::create($request->validated());
 
         return redirect()->route('admin.categories.index')->with('success', 'Category created successfully.');
     }

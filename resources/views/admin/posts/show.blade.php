@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin.layout>
     <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mt-6">
         <span class="dark:text-white ">{{ $post->user->name }}</span>
         <span class="dark:text-white ">{{ $post->category->name }}</span>
@@ -34,4 +34,4 @@
 
         </div>
     </div>
-</x-app-layout>
+</x-admin.layout>

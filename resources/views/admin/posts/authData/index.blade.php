@@ -1,10 +1,9 @@
-<x-app-layout>
+<x-admin.layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Your Posts') }}
         </h2>
     </x-slot>
-
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @if (session('success'))
@@ -70,7 +69,18 @@
                         </div>
                     </div>
                 @endforeach
+
+                @empty($user->posts)
+                    <div class="col-span-3">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                            <p class="text-center text-gray-600 dark:text-gray-400">
+                                No posts found.
+                            </p>
+                        </div>
+                    </div>
+                @endempty
             </div>
         </div>
     </div>
-</x-app-layout>
+
+</x-admin.layout>

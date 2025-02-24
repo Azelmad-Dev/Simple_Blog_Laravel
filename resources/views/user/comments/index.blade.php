@@ -68,6 +68,12 @@
                     @endcanany
                 </div>
             @endforeach
+
+            @empty($postCommentsWithUser->comments)
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+                    <p class="text-gray-700 dark:text-gray-300">No comments yet.</p>
+                </div>
+            @endempty
         </div>
     </div>
 </x-app-layout>

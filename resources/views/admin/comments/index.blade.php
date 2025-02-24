@@ -1,5 +1,4 @@
-<x-app-layout>
-
+<x-admin.layout>
     <div class="py-12">
 
         @if (session('success'))
@@ -65,6 +64,15 @@
                                 @endcan
                             </div>
                         @endforeach
+
+                        @empty($postCommentsWithUser->comments)
+                            <div
+                                class="bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mt-6">
+                                <div class="px-5 py-3">
+                                    <span class="dark:text-white ">No Comments Yet</span>
+                                </div>
+                            </div>
+                        @endempty
                     </div>
                 </div>
             </div>
@@ -72,4 +80,4 @@
 
     </div>
 
-</x-app-layout>
+</x-admin.layout>

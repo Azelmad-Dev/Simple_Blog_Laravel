@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Category;
 use App\Models\Post;
+use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Gate;
+use App\Http\Requests\StorePostRequest;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -16,7 +19,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
+        $categories = Category::paginate(7);
 
         $posts = Post::with(['user', 'category'])->latest()->get();
 
@@ -36,18 +39,15 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
-        $user_id = auth()->user()->id;
 
-        $validatedData = $request->validate([
-            // bail Rule on title : If required fails (e.g., the title is missing), Laravel will not check unique:posts or max:255
-            'title' => 'bail|required|unique:posts|max:255',
-            'content' => 'required',
-            'category_id' => 'required|exists:categories,id',
-        ]);
+        $validatedData = $request->validated();
 
-        $validatedData['user_id'] = $user_id;
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('/', 'posts');
+            $validatedData['image'] = $path;
+        }
 
         Post::create($validatedData);
 
@@ -102,6 +102,10 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         Gate::authorize('deleteAdmin', $post);
+
+        if ($post->image) {
+            Storage::disk('posts')->delete($post->image);
+        }
 
         $post->delete();
 
