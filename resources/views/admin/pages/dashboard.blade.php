@@ -6,7 +6,7 @@
             </h2>
             <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                 <p class="text-gray-600 dark:text-gray-300">
-                    {{ __("You're logged in as an Admin!") }}
+                    {{ __("You're logged in as an Admin! ohh") }}
                 </p>
             </div>
         </div>

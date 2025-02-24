@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -16,7 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::where('role', 2)->get();
+        $users = User::all();
 
         return view('admin.users.index', compact('users'));
     }
@@ -32,23 +32,9 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|max:255',
-            'email' => 'required|email|unique:users',
-            'role' => [
-                'required',
-                Rule::in(['1', '2']),
-            ],
-            'password' => 'required|min:8|confirmed',
-        ]);
-
-        $validatedData['password'] = Hash::make($validatedData['password']);
-
-        $validatedData['admin_id'] = auth()->user()->id;
-
-        User::create($validatedData);
+        User::create($request->validated());
 
         return redirect()->route('admin.users.index')->with('success', 'User created successfully.');
     }

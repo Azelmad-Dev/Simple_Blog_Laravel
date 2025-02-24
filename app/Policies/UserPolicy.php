@@ -36,9 +36,9 @@ class UserPolicy
      */
     public function update(User $user, User $model): Response
     {
-        return $user->id === $model->admin_id
+        return $user->id === $model->admin_id || ($model->admin_id === null && $model->isUser())
             ? Response::allow()
-            : Response::deny('You do not own this user.');
+            : Response::deny('You do not have permission to update this user.');
     }
 
     /**
@@ -46,7 +46,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model): Response
     {
-        return $user->id === $model->admin_id
+        return $user->id === $model->admin_id || ($model->admin_id === null && $model->isUser())
             ? Response::allow()
             : Response::deny('You do not own this user.');
     }

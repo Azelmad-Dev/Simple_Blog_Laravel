@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin.layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('These Posts Belong To You') }}
@@ -69,7 +69,15 @@
                         </div>
                     </div>
                 @endforeach
+
+                @empty($categories->posts)
+                    <div class="col-span-3">
+                        <p class="text-center text-gray-600 dark:text-gray-400">
+                            There Is No Post Yet.
+                        </p>
+                    </div>
+                @endempty
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-admin.layout>

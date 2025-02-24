@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GuestController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\CommentController;
 use App\Http\Controllers\User\DashboardController;
@@ -8,7 +9,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('guest');
+
+Route::name('guest.')->group(
+    function () {
+        Route::get('/about', [GuestController::class, 'about'])->name('about');
+    }
+);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

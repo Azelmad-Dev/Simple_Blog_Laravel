@@ -43,6 +43,10 @@
                     @foreach ($posts as $post)
                         <div
                             class="bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700 overflow-hidden">
+                            <div class="w-full h-48 overflow-hidden">
+                                <img src="{{ Storage::url('posts/' . $post->image) }}" alt="{{ $post->title }}"
+                                    class="w-full h-full object-cover">
+                            </div>
                             <div class="px-5 py-3 bg-gray-100 dark:bg-gray-900">
                                 <span
                                     class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $post->user->name }}</span>
@@ -67,6 +71,14 @@
                             </div>
                         </div>
                     @endforeach
+
+                    @empty($posts)
+                        <div class="col-span-3">
+                            <p class="text-center text-gray-600 dark:text-gray-400">
+                                There Is No Post Yet.
+                            </p>
+                        </div>
+                    @endempty
                 </div>
             </div>
         </div>

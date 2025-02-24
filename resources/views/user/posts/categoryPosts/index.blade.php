@@ -49,6 +49,14 @@
                         </div>
                     </div>
                 @endforeach
+
+                @empty($categories->posts)
+                    <div class="col-span-3">
+                        <p class="text-center text-gray-600 dark:text-gray-400">
+                            There Is No Post Yet.
+                        </p>
+                    </div>
+                @endempty
             </div>
         </div>
     </div>

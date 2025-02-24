@@ -65,6 +65,14 @@
                     </div>
                 </div>
             @endforeach
+
+            @empty($user->posts)
+                <div>
+                    <p class="text-center text-gray-600 dark:text-gray-400">
+                        You haven't created any posts yet.
+                    </p>
+                </div>
+            @endempty
         </div>
 
     </div>

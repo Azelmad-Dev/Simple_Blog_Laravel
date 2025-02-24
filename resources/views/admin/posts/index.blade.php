@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin.layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Posts Overview') }}
@@ -58,6 +58,10 @@
                         @foreach ($posts as $post)
                             <div
                                 class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                                <div class="w-full h-48 overflow-hidden">
+                                    <img src="{{ Storage::url('posts/' . $post->image) }}" alt="{{ $post->title }}"
+                                        class="w-full h-full object-cover">
+                                </div>
                                 <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                                     <div class="flex justify-between items-center">
                                         <span
@@ -90,9 +94,17 @@
                                 </div>
                             </div>
                         @endforeach
+
+                        @empty($posts)
+                            <div class="col-span-3">
+                                <p class="text-center text-gray-600 dark:text-gray-400">
+                                    There Is No Post Yet.
+                                </p>
+                            </div>
+                        @endempty
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+    </x-admi>
