@@ -32,7 +32,7 @@
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Categories</h3>
                         <div class="space-y-2">
                             @foreach ($categories as $category)
-                                <a href="{{ route('admin.posts.of_selected_category', $category) }}"
+                                <a href="{{ route('admin.posts.index', ['category_id' => $category->id]) }}"
                                     class="block px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-150">
                                     {{ $category->name }}
                                 </a>
@@ -43,19 +43,27 @@
 
                 <!-- Main Content -->
                 <div class="flex-1">
-                    <div class="mb-6">
-                        <a href="{{ route('admin.posts.create') }}"
-                            class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v16m8-8H4" />
-                            </svg>
-                            Add Post
-                        </a>
+                    <div class="flex">
+                        <div class="mb-6 mr-1">
+                            <a href="{{ route('admin.posts.create') }}"
+                                class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4v16m8-8H4" />
+                                </svg>
+                                Add Post
+                            </a>
+                        </div>
+                        <div class="mb-6">
+                            <a href="{{ route('admin.posts.index') }}"
+                                class="inline-flex items-center px-4 py-2 bg-blue-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                All Posts
+                            </a>
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        @foreach ($posts as $post)
+                        @forelse($posts as $post)
                             <div
                                 class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
                                 <div class="w-full h-48 overflow-hidden">
@@ -93,18 +101,18 @@
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
-
-                        @empty($posts)
+                        @empty
                             <div class="col-span-3">
                                 <p class="text-center text-gray-600 dark:text-gray-400">
                                     There Is No Post Yet.
                                 </p>
                             </div>
-                        @endempty
+                        @endforelse
+                        {{ $posts->onEachSide(2)->links() }}
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    </x-admi>
+</x-admin.layout>

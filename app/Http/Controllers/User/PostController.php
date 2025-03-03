@@ -20,7 +20,20 @@ class PostController extends Controller
     {
         $categories = Category::all();
 
-        $posts = Post::with(['user', 'category'])->latest()->get();
+        // Start with the base query
+        $query = Post::with(['user', 'category'])->latest();
+
+        // Apply category filter if it exists in the query string
+        if (request()->has('category_id')) {
+            $query->where('category_id', request('category_id'));
+        }
+
+        // Paginate and preserve query strings
+        //  withQueryString() role is to pserve the query strings
+        // in the pagination links , example : ?category_id=1   when a category has more
+        // that 4 when paginating through the pages withQueryString() will save the catrgory_id=1 in the pagination links
+
+        $posts = $query->paginate(4)->withQueryString();
 
         return view('user.posts.index', compact('posts', 'categories'));
     }
@@ -118,16 +131,5 @@ class PostController extends Controller
         $user = auth()->user()->load('posts.category');
 
         return view('user.posts.authData.index', compact('user'));
-    }
-
-    /**
-     * Display a list of the posts that belongs to selected category.
-     */
-
-    public function categoryPosts(Category $category)
-    {
-        $categories = $category->load('posts.user');
-
-        return view('user.posts.categoryPosts.index', compact('categories', 'category'));
     }
 }
