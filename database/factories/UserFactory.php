@@ -26,11 +26,32 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'role' => 2,
             'email_verified_at' => now(),
+            'role' => fake()->randomElement([1, 2]),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'admin_id' => null,
         ];
+    }
+
+    /**
+     * Indicate that the user is an admin.
+     */
+    public function admin(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'role' => 1,
+        ]);
+    }
+
+    /**
+     * Indicate that the user is a user.
+     */
+    public function user(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'role' => 2,
+        ]);
     }
 
     /**
