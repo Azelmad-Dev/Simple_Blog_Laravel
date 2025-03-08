@@ -124,12 +124,16 @@ class PostController extends Controller
     }
 
     /**
-     * Display a list of the posts that belongs to authenticated admin.
+     * Display a list of the posts that belongs to authenticated user.
      */
-    public function userPosts()
-    {
-        $user = auth()->user()->load('posts.category');
 
-        return view('user.posts.authData.index', compact('user'));
+    public function myPosts()
+    {
+        $categories = Category::all();
+        $posts = Post::myposts()->with(['user', 'category'])
+            ->latest()
+            ->paginate(4);
+
+        return view('user.posts.index', compact('posts', 'categories'));
     }
 }

@@ -19,7 +19,7 @@
                         <x-nav-link :href="route('user.posts.index')">
                             {{ __('Home') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('user.posts.of_authenticated_user')">
+                        <x-nav-link :href="route('user.posts.my_posts')">
                             {{ __('My Posts') }}
                         </x-nav-link>
                     </div>
@@ -115,7 +115,7 @@
                 <x-responsive-nav-link :href="route('admin.posts.index')" :active="request()->routeIs('dashboard')">
                     {{ __('Home') }}
                 </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('admin.posts.of_authenticated_admin')" :active="request()->routeIs('dashboard')">
+                <x-responsive-nav-link :href="route('admin.posts.my_posts')" :active="request()->routeIs('dashboard')">
                     {{ __('My Posts') }}
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('dashboard')">

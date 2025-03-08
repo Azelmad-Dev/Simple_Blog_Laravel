@@ -25,10 +25,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Create 2 users
-        $users = User::factory(2)->create();
+        $users = User::factory(4)->create();
 
         // Create 2 categories
-        $categories = Category::factory(2)->create();
+        $categories = Category::factory(4)->create();
 
         // NOTE: The recycle() method overrides the factory definitions
         // that would normally create new users and categories.
@@ -48,7 +48,7 @@ class DatabaseSeeder extends Seeder
         //   // (reusing existing users and categories from the collections)
 
         // version 1
-        Post::factory(2)
+        Post::factory(8)
             // pick a user randomly from the $users collection we already created.
             ->recycle($users)
             // pick a category randomly from the $categories collection we already created.

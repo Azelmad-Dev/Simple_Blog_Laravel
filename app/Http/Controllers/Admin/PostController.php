@@ -4,30 +4,43 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Post;
 use App\Models\Category;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\StorePostRequest;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
+    protected $categories;
+
+    public function __construct()
+    {
+        $this->categories = Category::all();
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $categories = Category::all();
-
         // Start with the base query
         $query = Post::with(['user', 'category'])->latest();
 
-        // Apply category filter if it exists in the query string
-        if (request()->has('category_id')) {
-            $query->where('category_id', request('category_id'));
-        }
+        // Apply category filter if it exists in the query string using when method instead of if statement
+        $query->when(request()->has('category_id'), function ($q) {
+            return $q->where('category_id', request('category_id'));
+        });
+
+        $query->when(request()->has('name'), function ($q) {
+            $user = User::where('name', request('name'))->first();
+            if ($user) {
+                return $q->byUser($user);
+            }
+        });
+
 
         // Paginate and preserve query strings
         //  withQueryString() role is to pserve the query strings
@@ -36,7 +49,7 @@ class PostController extends Controller
 
         $posts = $query->paginate(4)->withQueryString();
 
-        return view('admin.posts.index', compact('posts', 'categories'));
+        return view('admin.posts.index', ['posts' => $posts, 'categories' => $this->categories]);
     }
 
     /**
@@ -44,9 +57,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        $categories = Category::all();
-
-        return view('admin.posts.create', compact('categories'));
+        return view('admin.posts.create', ['categories' => $this->categories]);
     }
 
     /**
@@ -82,9 +93,7 @@ class PostController extends Controller
     {
         Gate::authorize('updateAdmin', $post);
 
-        $categories = Category::all();
-
-        return view('admin.posts.edit', compact('post', 'categories'));
+        return view('admin.posts.edit', ['post' => $post, 'categories' => $this->categories]);
     }
 
     /**
@@ -126,12 +135,16 @@ class PostController extends Controller
     }
 
     /**
-     * Display a list of the posts that belongs to authenticated user.
+     * Display a list of the posts that belongs to authenticated admin.
      */
-    public function adminPosts()
-    {
-        $user = auth()->user()->load('posts.category');
 
-        return view('admin.posts.authData.index', compact('user'));
+    public function yourPosts()
+    {
+        $posts = Post::myposts()->with(['user', 'category'])
+            ->latest()
+            ->paginate(4)
+            ->withQueryString();
+
+        return view('admin.posts.index', ['posts' => $posts, 'categories' => $this->categories]);
     }
 }

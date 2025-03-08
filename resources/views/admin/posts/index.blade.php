@@ -72,8 +72,10 @@
                                 </div>
                                 <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                                     <div class="flex justify-between items-center">
-                                        <span
-                                            class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $post->user->name }}</span>
+                                        <a href="{{ route('admin.posts.index', ['name' => $post->user->name]) }}">
+                                            <span
+                                                class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $post->user->name }}</span>
+                                        </a>
                                         <span
                                             class="text-sm px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 rounded-full">
                                             {{ $post->category->name }}

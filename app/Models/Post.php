@@ -25,4 +25,14 @@ class Post extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function scopeMyposts($query)
+    {
+        return $query->where('user_id', auth()->id());
+    }
+
+    public function scopeByUser($query, $user)
+    {
+        return $query->where('user_id', $user->id);
+    }
 }

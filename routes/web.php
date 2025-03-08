@@ -26,7 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware(['user'])->name('user.')->group(
         function () {
             // ==> this route is for showing the post that belongs to authenticated user
-            Route::get('/my_posts', [PostController::class, 'userPosts'])->name('posts.of_authenticated_user');
+            Route::get('/posts/my_posts', [PostController::class, 'myPosts'])->name('posts.my_posts');
             Route::resource('posts', PostController::class);
 
             Route::get('/comments/{post}', [CommentController::class, 'showPostsComments'])->name('comments.of_selected_post');
