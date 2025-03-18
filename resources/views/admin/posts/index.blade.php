@@ -70,9 +70,12 @@
                                     <img src="{{ Storage::url('posts/' . $post->image) }}" alt="{{ $post->title }}"
                                         class="w-full h-full object-cover">
                                 </div>
+
+
                                 <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                                     <div class="flex justify-between items-center">
-                                        <a href="{{ route('admin.posts.index', ['name' => $post->user->name]) }}">
+                                        <a
+                                            href="{{ route('admin.posts.index', ['username' => $post->user->username]) }}">
                                             <span
                                                 class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $post->user->name }}</span>
                                         </a>

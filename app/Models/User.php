@@ -19,6 +19,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'role',
         'password',
@@ -51,6 +52,13 @@ class User extends Authenticatable
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    // Get recent posts (last 7 days)
+    // This is an example of a scoped Relationships
+    public function recentPosts()
+    {
+        return $this->posts()->where('created_at', '>=', now()->subDays(7));
     }
 
     public function comments()
