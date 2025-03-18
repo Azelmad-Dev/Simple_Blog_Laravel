@@ -11,14 +11,19 @@ class Post extends Model
 
     protected $fillable = ['title', 'content', 'category_id', 'user_id', 'image'];
 
+    // withDefault() method will return an empty instance of the related model if the relationship is null
+    # Example:
+    // $post = Post::find(1);
+    // Even if no user exists, this won't throw an error
+    // echo $post->user->name; : Will output empty string instead of error
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withDefault();
     }
 
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class)->withDefault();
     }
 
     public function comments()
@@ -31,8 +36,15 @@ class Post extends Model
         return $query->where('user_id', auth()->id());
     }
 
-    public function scopeByUser($query, $user)
+    // New
+    public function scopeByUser($query, $username)
     {
-        return $query->where('user_id', $user->id);
+        return $query->where('username', $username);
+    }
+
+    // New scope for category filtering
+    public function scopeByCategory($query, $categoryId): void
+    {
+        $query->where('category_id', $categoryId);
     }
 }

@@ -9,7 +9,6 @@ use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\StorePostRequest;
-use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
@@ -31,14 +30,12 @@ class PostController extends Controller
 
         // Apply category filter if it exists in the query string using when method instead of if statement
         $query->when(request()->has('category_id'), function ($q) {
-            return $q->where('category_id', request('category_id'));
+            return  $q->byCategory(request('category_id'));
         });
 
-        $query->when(request()->has('name'), function ($q) {
-            $user = User::where('name', request('name'))->first();
-            if ($user) {
-                return $q->byUser($user);
-            }
+        // Apply user filter if it exists in the query string using when method instead of if statement
+        $query->when(request()->has('username'), function ($q) {
+            return $q->byUser(request('username'));
         });
 
 
@@ -144,6 +141,13 @@ class PostController extends Controller
             ->latest()
             ->paginate(4)
             ->withQueryString();
+
+        // other way to get the posts that belongs to authenticated admin
+        // $posts = Post::whereBelongsTo(auth()->user())
+        //     ->with(['user', 'category'])
+        //     ->latest()
+        //     ->paginate(4)
+        //     ->withQueryString();
 
         return view('admin.posts.index', ['posts' => $posts, 'categories' => $this->categories]);
     }
