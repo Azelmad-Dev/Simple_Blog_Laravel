@@ -2,7 +2,11 @@
 
 namespace App\Http\Requests;
 
-class StorePostRequest extends BaseFormRequest
+use App\Models\Post;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+class UpdatePostRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,16 +23,21 @@ class StorePostRequest extends BaseFormRequest
      */
     public function rules(): array
     {
+        $postId = $this->route('post')->id;
+
         return [
-            // bail Rule on title : If required fails (e.g., the title is missing), Laravel will not check unique:posts or max:255
-            'title' => 'bail|required|unique:posts|max:255',
+            // Title is required, unique except for the current post
+            'title' => [
+                'bail',
+                'required',
+                Rule::unique('posts')->ignore($postId),
+                'max:255'
+            ],
             'content' => 'required',
             'category_id' => 'required|exists:categories,id',
-            'user_id' => 'required|exists:users,id',
-            'image' => 'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048', // 2MB max
         ];
     }
-
 
     /**
      * displaying category id is required istead of category_id.

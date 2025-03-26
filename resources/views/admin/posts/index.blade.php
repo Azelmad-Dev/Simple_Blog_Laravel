@@ -31,12 +31,18 @@
                     <div class="mb-4">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Categories</h3>
                         <div class="space-y-2">
-                            @foreach ($categories as $category)
+                            @forelse ($categories as $category)
                                 <a href="{{ route('admin.posts.index', ['category_id' => $category->id]) }}"
                                     class="block px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-150">
                                     {{ $category->name }}
                                 </a>
-                            @endforeach
+                            @empty
+                                <div class="col-span-3">
+                                    <p class="text-center text-gray-600 dark:text-gray-400">
+                                        There Is No Categories Yet.
+                                    </p>
+                                </div>
+                            @endforelse
                         </div>
                     </div>
                 </div>

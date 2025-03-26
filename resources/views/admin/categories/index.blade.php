@@ -39,7 +39,7 @@
                                 @foreach ($categories as $category)
                                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <a href="{{ route('admin.posts.of_selected_category', $category) }}"
+                                            <a href="{{ route('admin.posts.index', ['category_id' => $category->id]) }}"
                                                 class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
                                                 {{ $category->name }}
                                             </a>

@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Post;
+use App\Models\User;
 use App\Models\Category;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
@@ -17,7 +17,7 @@ class PostController extends Controller
 
     public function __construct()
     {
-        $this->categories = Category::all();
+        $this->categories = Category::select('id', 'name')->get();
     }
 
     /**
@@ -35,7 +35,8 @@ class PostController extends Controller
 
         // Apply user filter if it exists in the query string using when method instead of if statement
         $query->when(request()->has('username'), function ($q) {
-            return $q->byUser(request('username'));
+            $user = User::select('id')->where('username', request('username'))->firstOrFail();
+            return $q->byUser($user->id);
         });
 
 
@@ -43,7 +44,20 @@ class PostController extends Controller
         //  withQueryString() role is to pserve the query strings
         // in the pagination links , example : ?category_id=1   when a category has more
         // that 4 when paginating through the pages withQueryString() will save the catrgory_id=1 in the pagination links
+        // Example with withQueryString():
+        // Let's say you're viewing posts filtered by category_id=1: example.com/posts?category_id=1
+        // When paginated with withQueryString(), the links would be:
 
+        // Page 1: example.com/posts?category_id=1&page=1
+        // Page 2: example.com/posts?category_id=1&page=2
+        // Page 3: example.com/posts?category_id=1&page=3
+
+        // Example without withQueryString():
+        // Without withQueryString(), the pagination links would lose the category filter:
+
+        // Page 1: example.com/posts?page=1
+        // Page 2: example.com/posts?page=2
+        // Page 3: example.com/posts?page=3
         $posts = $query->paginate(4)->withQueryString();
 
         return view('admin.posts.index', ['posts' => $posts, 'categories' => $this->categories]);
@@ -66,6 +80,8 @@ class PostController extends Controller
         $validatedData = $request->validated();
 
         if ($request->hasFile('image')) {
+            //if I haven't done this Laravel will try to store image object
+            //(dd($request->file('image'))) in the database but image column excpect a String
             $path = $request->file('image')->store('/', 'posts');
             $validatedData['image'] = $path;
         }
@@ -96,19 +112,21 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Post $post)
+    public function update(UpdatePostRequest $request, Post $post)
     {
         Gate::authorize('updateAdmin', $post);
 
-        $validatedData = $request->validate([
-            'title' => [
-                'required',
-                'max:255',
-                Rule::unique('posts')->ignore($post->id),
-            ],
-            'content' => 'required',
-            'category_id' => 'required|exists:categories,id',
-        ]);
+        $validatedData = $request->validated();
+
+        if ($request->hasFile('image')) {
+            if ($post->image) {
+                Storage::disk('posts')->delete($post->image);
+            }
+
+            //if I haven't done this Laravel will try to store image object
+            $path = $request->file('image')->store('/', 'posts');
+            $validatedData['image'] = $path;
+        }
 
         $post->update($validatedData);
 
@@ -137,10 +155,9 @@ class PostController extends Controller
 
     public function yourPosts()
     {
-        $posts = Post::myposts()->with(['user', 'category'])
+        $posts = Post::yourposts()->with(['user', 'category'])
             ->latest()
-            ->paginate(4)
-            ->withQueryString();
+            ->paginate(4);
 
         // other way to get the posts that belongs to authenticated admin
         // $posts = Post::whereBelongsTo(auth()->user())

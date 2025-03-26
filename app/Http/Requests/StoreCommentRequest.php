@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCommentRequest extends FormRequest
+class StoreCommentRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -12,18 +12,6 @@ class StoreCommentRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
-    }
-
-    /**
-     * Prepare the data before validation if needed
-     * For example, you might want to trim whitespace from names
-     * or ensure email is lowercase
-     */
-    protected function prepareForValidation(): void
-    {
-        $this->merge([
-            'user_id' => auth()->id(),
-        ]);
     }
 
     /**
@@ -35,7 +23,7 @@ class StoreCommentRequest extends FormRequest
     {
         return [
             'content' => 'bail|required|max:255',
-            'post_id' => 'required',
+            // 'post_id' => 'required|exists:posts,id',
             'user_id' => 'required|exists:users,id',
         ];
     }

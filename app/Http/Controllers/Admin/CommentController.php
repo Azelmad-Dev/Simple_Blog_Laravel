@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Post;
+use App\Models\Comment;
+use Illuminate\Support\Arr;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCommentRequest;
-use App\Models\Comment;
-use App\Models\Post;
-use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
@@ -27,15 +28,31 @@ class CommentController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * code version 1 to Store a newly created resource in storage.
      */
     public function store(StoreCommentRequest $request)
     {
         $validatedData = $request->validated();
 
-        Comment::create($validatedData);
+        $post = Post::find($validatedData['post_id']);
 
-        return redirect()->route('user.comments.of_selected_post', ['post' => $validatedData['post_id']]);
+        $comment = Arr::except($validatedData, 'post_id');
+
+        $post->comments()->create($comment);
+
+        return redirect()->route('admin.comments.of_selected_post', ['post' => $post]);
+    }
+
+    /**
+     * code version 2 to  Store a new comment for a specific post.
+     */
+    public function storeCommentForAPost(StoreCommentRequest $request, Post $post)
+    {
+        $validatedData = $request->validated();
+
+        $post->comments()->create($validatedData);
+
+        return redirect()->route('admin.comments.of_selected_post', ['post' => $post]);
     }
 
     /**
@@ -76,10 +93,14 @@ class CommentController extends Controller
      * Display the comments of the selected post.
      */
 
-    public function showPostsComments(Post $post)
+    public function showCommentsOfPost(Post $post)
     {
-        $postCommentsWithUser = $post->load('comments.user');
+        // Using load() because the $post model is already retrieved via route model binding.
+        // load() allows us to fetch related comments after we already have the post instance.
+        // if we use with() instead of load(), it will fetch all comments for all posts.
+        // $post = $post->with('comments.user')->find($post->id);
+        $post = $post->load('comments.user');
 
-        return view('admin.comments.index', compact('postCommentsWithUser'));
+        return view('admin.comments.index', compact('post'));
     }
 }
