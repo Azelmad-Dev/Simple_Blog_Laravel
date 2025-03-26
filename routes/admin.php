@@ -13,7 +13,9 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 Route::get('/posts/your_posts', [PostController::class, 'yourPosts'])->name('posts.your_posts');
 Route::resource('posts', PostController::class);
 
-Route::get('/comments/{post}', [CommentController::class, 'showPostsComments'])->name('comments.of_selected_post');
+Route::get('/comments/{post}', [CommentController::class, 'showCommentsOfPost'])->name('comments.of_selected_post');
+// ==> this route is for storing a comment for a specific post
+Route::post('/comments/{post}', [CommentController::class, 'storeCommentForAPost'])->name('comments.storeCommentForAPost');
 Route::resource('comments', CommentController::class);
 
 Route::resource('categories', CategoryController::class);

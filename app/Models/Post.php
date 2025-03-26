@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model
@@ -26,20 +27,20 @@ class Post extends Model
         return $this->belongsTo(Category::class)->withDefault();
     }
 
-    public function comments()
+    public function comments(): MorphMany
     {
-        return $this->hasMany(Comment::class);
+        return $this->morphMany(Comment::class, 'commentable')->chaperone();
     }
 
-    public function scopeMyposts($query)
+    public function scopeYourposts($query)
     {
         return $query->where('user_id', auth()->id());
     }
 
     // New
-    public function scopeByUser($query, $username)
+    public function scopeByUser($query, $user_id)
     {
-        return $query->where('username', $username);
+        return $query->where('user_id', $user_id);
     }
 
     // New scope for category filtering

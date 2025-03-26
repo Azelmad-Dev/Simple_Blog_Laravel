@@ -54,6 +54,11 @@ class User extends Authenticatable
         return $this->hasMany(Post::class);
     }
 
+    public function videos()
+    {
+        return $this->hasMany(Video::class);
+    }
+
     // Get recent posts (last 7 days)
     // This is an example of a scoped Relationships
     public function recentPosts()

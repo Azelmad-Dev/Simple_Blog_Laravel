@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\User;
 use App\Models\Comment;
 use App\Models\Category;
+use App\Models\Video;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -72,5 +73,15 @@ class DatabaseSeeder extends Seeder
         //         })
         //         ->recycle($users))
         //     ->create();
+
+        Video::factory(8)
+            // pick a user randomly from the $users collection we already created.
+            ->recycle($users)
+            // pick a category randomly from the $categories collection we already created.
+            ->recycle($categories)
+            // creates 2 comments for each post. The recycle($users) part tells it to use our
+            // existing users for the comments rather than creating new ones.
+            ->has(Comment::factory(2)->recycle($users))
+            ->create();
     }
 }
