@@ -8,6 +8,7 @@
                     <form action="{{ route('admin.posts.store') }}" method="POST" class="space-y-6"
                         enctype="multipart/form-data">
                         @csrf
+
                         <div class="grid gap-6 sm:grid-cols-2">
                             <div class="sm:col-span-2">
                                 <label for="title"
